@@ -1,5 +1,10 @@
 #!/usr/bin/env roseus
 
+(load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
+(hrp2w-init)
+(objects *hrp2w*)
+
+
 (ros::roseus "tutorial_desuyo")
 
 (setq *vel_msg* (instance geometry_msgs::Twist :init))
@@ -32,33 +37,41 @@
 
 (defun byebye()
 
- (send *hrp2w* :souhlder-p :joint-angle -90)
- (send *hrp2w* :wrist-y :joint-angle -90)
- (send *hrp2w* :elbow-p :joint-angle -90)
- (send *ri* :angle-vector (send *hrp2* :angle-vector) 6000)
+ (send *hrp2w* :rarm :shoulder-p :joint-angle -90)
+ (send *hrp2w* :rarm :wrist-y :joint-angle 90)
+ (send *hrp2w* :rarm :elbow-p :joint-angle -90)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 6000)
  (send *ri* :wait-interpolation)
 
- (send *hrp2* :elbow-y :jointangle 20)
- (send *ri* :angle-vector (send *hrp2* :angle-vector) 1000)
+ (send *hrp2w* :rarm :shoulder-y :joint-angle 20)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 1000)
  (send *ri* :wait-interpolation)
 
- (send *hrp2* :elbow-y :jointangle -20)
- (send *ri* :angle-vector (send *hrp2* :angle-vector) 2000)
+ (send *hrp2w* :rarm :shoulder-y :joint-angle -20)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 2000)
  (send *ri* :wait-interpolation)
 
- (send *hrp2* :elbow-y :jointangle 20)
- (send *ri* :angle-vector (send *hrp2* :angle-vector) 2000)
+ (send *hrp2w* :rarm :shoulder-y :joint-angle 20)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 2000)
  (send *ri* :wait-interpolation)
 
- (send *hrp2* :elbow-y :jointangle 0)
- (send *ri* :angle-vector (send *hrp2* :angle-vector) 1000)
+ (send *hrp2w* :rarm :shoulder-y :joint-angle -20)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 2000)
+ (send *ri* :wait-interpolation)
+
+ (send *hrp2w* :rarm :shoulder-y :joint-angle 20)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 2000)
+ (send *ri* :wait-interpolation)
+
+ (send *hrp2w* :rarm :shoulder-y :joint-angle 0)
+ (send *ri* :angle-vector (send *hrp2w* :angle-vector) 1000)
  (send *ri* :wait-interpolation)
 
 )
 
 (defun myreset()
   (send *hrp2w* :reset-pose)
-  (send *ri* :angle-vector (send *hrp2* :angle-vector) 5000)
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
 )
 
