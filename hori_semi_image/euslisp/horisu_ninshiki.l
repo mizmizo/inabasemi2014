@@ -50,8 +50,8 @@
 									*hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
       
       (send *irtviewer* :draw-objects)
-      //(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-      //(send *ri* :wait-interpolation)
+      ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+      ;(send *ri* :wait-interpolation)
       'done)))
 
 (ros::spin-once)
