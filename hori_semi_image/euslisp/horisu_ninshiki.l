@@ -3,7 +3,7 @@
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
 (hrp2w-init)
 (objects *hrp2w*)
-
+(ros::roseus-add-msgs "jsk_pcl_ros")
 
 (ros::roseus "horisu_ninshiki")
 (setq *tfl* (instance ros::transform-listener :init))
