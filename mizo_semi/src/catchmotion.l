@@ -1,6 +1,6 @@
 #!/usr/bin/env roseus
 
-(ros::roseus "catchmotion")
+(ros::roseus "motion")
 
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
 (hrps2-init)
