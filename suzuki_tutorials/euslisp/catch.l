@@ -6,11 +6,12 @@
 (objects *hrp2w*)
 
 (setq *tfl* (instance ros::transform-listener :init))
-(setq *torso-co* (send (car (send *hrp2* :torso)) :copy-worldcoords))
+(setq *torso-co* (send (car (send *hrp2w* :torso)) :copy-worldcoords))
 ;; トルソリンクの一番最初の世界座標系での座標をコピー
-(setq *target-co* (send *tfl* :lookup-transform "CHEST_LINK0"
-"/camera_remote/depth_registered/cluster_decomposeroutput00"
-(ros::time 0)))
+
+(unix::sleep 3)
+
+(setq *target-co* (send *tfl* :lookup-transform "CHEST_LINK0" "/camera_remote/depth_registered/cluster_decomposeroutput00" (ros::time 0)))
 ;; TFで認識されたものの一番最初の場所を，CHEST_LINK0から見た相対座標を持ってくる．
 (setq *ik-target* (send *torso-co* :transform *target-co*))
 ;; トルソから計算し直すことでeus世界の世界座標系に変換
@@ -20,7 +21,7 @@
 ;; コピーした右手座標の位置だけを認識したものにすげ替える
 (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
 :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
-*hrp2w* :rarm :end-coords :parent) (car (send *hrp2* :torso :links))))
+*hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
 ;; 腰を使ったIKの使い方．回転角度は無視して位置だけ見る．計算途中の結果を画面に出力する．トルソを使う．IKに使わせるリンクをすべて渡す．
-(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-(send *ri* :wait-interpolation)
+;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+;;(send *ri* :wait-interpolation)
