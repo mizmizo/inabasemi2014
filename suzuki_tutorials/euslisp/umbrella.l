@@ -17,13 +17,17 @@
   (setq *dest* (send *umb-pos* :copy-worldcoords))
   (send *dest* :translate (float-vector -100 0 0))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
-  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
   (send *ri* :wait-interpolation)
 
   (setq *dest* (send *umb-pos* :copy-worldcoords))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
+)
+
+(defun catch ()
+  (hrp2w-start :rarm :grasp :angle -15)
 )
 
 (defun up ()
@@ -48,6 +52,7 @@
   (send *ri* :wait-interpolation)
   
   (send *hrp2w* :reset-pose)
+  (send *hrp2w* :rarm :thumb-r :joint-angle -15)
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
 )
