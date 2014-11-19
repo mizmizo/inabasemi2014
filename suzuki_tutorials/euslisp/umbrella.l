@@ -42,7 +42,7 @@
 
 (defun back ()
   (setq *dest* (send *umb-pos* :copy-worldcoords))
-  (send *dest* :translate (float-vector -200 0 0))
+  (send *dest* :translate (float-vector -200 0 500))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
