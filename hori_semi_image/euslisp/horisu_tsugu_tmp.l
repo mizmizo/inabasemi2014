@@ -17,7 +17,7 @@
   (setq *larm-end* (send *hrp2w* :larm :end-coords :copy-worldcoords))
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
 
-  (send *larm-end* :translate #f(0 -200 0) :world)
+  (send *larm-end* :translate #f(0 -200 -100) :world)
   (send *larm-end* :rpy -45 0 0)
 
   (send *hrp2w* :larm :inverse-kinematics *larm-end* :rotation-axis t
@@ -48,9 +48,35 @@
 
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
   (send *rarm-end* :locate (send *hrp2w* :larm :end-coords :worldpos) :world)
-  (send *rarm-end* :translate #f(0 0 300) :world)
-  (send *rarm-end* :translate (float-vector 0 (* (- 300) (sin (deg2rad 45))) (* (- 300) (cos (deg2rad 45)))) :world)
-  (send *rarm-end* :rotate -45 :x :world)
+  (send *rarm-end* :translate #f(0 0 400) :world)
+  (send *rarm-end* :translate (float-vector 0 (* (- 200) (sin (deg2rad 15))) (* (- 200) (cos (deg2rad 15)))) :world)
+  (send *rarm-end* :rotate -15 :x :world)
+;;
+  (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis t
+	:debug-view t :torso t
+	:link-list (cdr (cdr (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))))
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
+
+  (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
+  (send *rarm-end* :locate (send *hrp2w* :larm :end-coords :worldpos) :world)
+  (send *rarm-end* :translate #f(0 0 400) :world)
+  (send *rarm-end* :translate (float-vector 0 (* (- 200) (sin (deg2rad 15))) (* (- 200) (cos (deg2rad 15)))) :world)
+  (send *rarm-end* :rotate -15 :x :world)
+
+  (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis t
+	:debug-view t :torso t
+	:link-list (cdr (cdr (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))))
+  (send *irtviewer* :draw-objects)
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
+;;
+  (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
+  (send *rarm-end* :locate (send *hrp2w* :larm :end-coords :worldpos) :world)
+  (send *rarm-end* :translate #f(0 0 400) :world)
+  (send *rarm-end* :translate (float-vector 0 (* (- 200) (sin (deg2rad 15))) (* (- 200) (cos (deg2rad 15)))) :world)
+  (send *rarm-end* :rotate -15 :x :world)
 
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis t
 	:debug-view t :torso t
