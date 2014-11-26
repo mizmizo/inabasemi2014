@@ -68,9 +68,9 @@
 
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
   (send *rarm-end* :locate (send *hrp2w* :larm :end-coords :worldpos) :world)
-  (send *rarm-end* :translate #f(0 0 400) :world)
-  (send *rarm-end* :translate (float-vector 0 (* (- 200) (sin (deg2rad 30))) (* (- 200) (cos (deg2rad 30)))) :world)
-  (send *rarm-end* :rotate -30 :x :world)
+  (send *rarm-end* :translate #f(0 0 300) :world)
+  (send *rarm-end* :translate (float-vector 0 (* (- 200) (sin (deg2rad 45))) (* (- 200) (cos (deg2rad 45)))) :world)
+  (send *rarm-end* :rotate -45 :x :world)
 ;;
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis t
 	:debug-view t :torso t
@@ -133,7 +133,7 @@
 
 
 		(setq *ik-target* (send *torso-co* :transform *target-co*))
-
+		(objects (list *hrp2w* *ik-target*))
 		'done)
 	    nil))
       nil)))
@@ -151,7 +151,7 @@
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
 
   (send *rarm-end* :locate pet :world)
-  (send *rarm-end* :translate #f(-150 -40 50) :world)
+  (send *rarm-end* :translate #f(-150 -30 50) :world)
 
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis :x
 	:debug-view t :torso t :link-list (send *hrp2w* :link-list (send
@@ -167,7 +167,11 @@
 
   (hrp2w-stop-grasp :rarm)
   ;;
-  (send *rarm-end* :translate #f(60 0 0) :world)
+
+  (send *hrp2w* :rarm :wrist-y :joint-angle (+ (send *hrp2w* :rarm :wrist-y :joint-angle) 10))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector))
+
+  (send *rarm-end* :translate #f(80 0 0) :world)
 
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis :x
 	:debug-view t :torso t :link-list (send *hrp2w* :link-list (send
