@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 
 (ros::roseus "umbrella-catch")
+(ros::roseus-add-msgs "jsk_pcl_ros")
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
 (hrp2w-init)
 (setq *umb-pos* nil)
@@ -28,47 +29,53 @@
 (objects (list *hrp2w*))
 
 (defun detect ()
+  (setq *obj-tf* nil)
   (ros::spin-once)
   (when *obj-tf*
     (progn
+      (setq *tfl* (instance ros::transform-listener :init))
       (when (send *tfl* :wait-for-transform "CHEST_LINK0" *obj-tf* (ros::time 0) 3)
 	(progn
+	  (setq *torso-co* (send (car (send *hrp2w* :torso)) :copy-worldcoords))
 	  (setq *target-co* (send *tfl* :lookup-transform "CHEST_LINK0" *obj-tf* (ros::time 0)))
 	  ;; TFで認識されたものの一番最初の場所を，CHEST_LINK0から見た相対座標を持ってくる．
 	  (setq *umb-pos* (send *torso-co* :transform *target-co*))
-	  (objects (list *hrp2w* *umb-pos*)))))))
+	  (setq *umb-dest-pos* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
+	  (send *umb-dest-pos* :locate (send *umb-pos* :pos) :world)
+	  (objects (list *hrp2w* *umb-pos* *umb-dest-pos*)))))))
 
 (defun reset ()
   (send *hrp2w* :reset-pose)
+  (send *hrp2w* :head :neck-p :joint-angle 30.0)
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
 )
 
 (defun ready ()
-  (setq *dest* (send *umb-pos* :copy-worldcoords))
+  (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
   (send *dest* :translate (float-vector -100 0 0))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
   (send *ri* :wait-interpolation)
 
-  (setq *dest* (send *umb-pos* :copy-worldcoords))
-  (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
+  (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
+  (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)) :rotation-axis :z)
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
 )
 
 (defun catch ()
-  (hrp2w-start :rarm :grasp :angle -15)
+  (hrp2w-start-grasp :rarm :angle -15)
 )
 
 (defun up ()
-  (setq *dest* (send *umb-pos* :copy-worldcoords))
+  (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
   (send *dest* :translate (float-vector 0 0 250))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
-  
-  (setq *dest* (send *umb-pos* :copy-worldcoords))
+
+  (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
   (send *dest* :translate (float-vector 0 0 500))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
@@ -76,12 +83,12 @@
 )
 
 (defun back ()
-  (setq *dest* (send *umb-pos* :copy-worldcoords))
+  (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
   (send *dest* :translate (float-vector -200 0 500))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
-  
+
   (setq *thumb* (send *hrp2w* :rarm :thumb-r :joint-angle))
   (send *hrp2w* :reset-pose)
   (send *hrp2w* :rarm :thumb-r :joint-angle *thumb*)
