@@ -58,6 +58,9 @@
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
   (send *ri* :wait-interpolation)
 
+  (hrp2w-stop-grasp *lruse*)
+  (send *ri* :wait-interpolation)
+
   (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
   (send *hrp2w* :rarm :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)) :rotation-axis :z)
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
