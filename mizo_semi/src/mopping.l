@@ -22,8 +22,8 @@
         "/camera_remote/depth_registered/cluster_decomposeroutput00"
         (ros::time 0) 3)
   (send *tarr* (send *tfl* :lookup-transform "CHEST_LINK0"
-                     "/camera_remote/depth_registered/cluster_decomposeroutput00"
-		     (ros::time 0)))
+        "/camera_remote/depth_registered/cluster_decomposeroutput00"
+	(ros::time 0)))
   (setq *ik-rtarget* (send *torso-co* :transform *tarr*))
   (setq *ik-rtarget-pre* :locate (send *ik-rtarget* :pos) :world)
   (send *ik-rtarget-pre* :translate #f(-100 0 0))
