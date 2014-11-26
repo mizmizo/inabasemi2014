@@ -25,7 +25,7 @@
 (defun kamae ()
   (let (rthumb lthumb)
     (setq rthumb (send *hrp2w* :rarm :thumb-r :joint-angle))
-    (setq lthumb (send *hrp2w* :larm :thumb-r :jioin-angle))
+    (setq lthumb (send *hrp2w* :larm :thumb-r :joint-angle))
     (send *hrp2w* :reset-pose)
     (send *hrp2w* :rarm :thumb-r :joint-angle rthumb)
     (send *hrp2w* :rarm :thumb-r :joint-angle rthumb)
