@@ -57,12 +57,12 @@
   ;;右手の経由
   (setq *rvia* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
   (send *rvia* :locate (send *rtray_pos* :pos) :world)
-  (send *rvia* :translate (float-vector -120 0 0))
+  (send *rvia* :translate (float-vector -50 0 0))
   (send *hrp2w* :rarm :inverse-kinematics *rvia* :rotation-axis t :torso t)
   ;;左手の経由
   (setq *lvia* (send *hrp2w* :larm :end-coords :copy-worldcoords))
   (send *lvia* :locate (send *ltray_pos* :pos) :world)
-  (send *lvia* :translate (float-vector -120 0 0))
+  (send *lvia* :translate (float-vector -50 0 0))
   (send *hrp2w* :larm :inverse-kinematics *lvia* :rotation-axis t :torso t)
   ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
