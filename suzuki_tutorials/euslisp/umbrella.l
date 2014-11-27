@@ -73,7 +73,7 @@
   (send *ri* :wait-interpolation)
 
   (setq *dest* (send *umb-dest-pos* :copy-worldcoords))
-  (send *dest* :translate (float-vector 0 (* 20 *lrsign*) 0))
+  (send *dest* :translate (float-vector 0 (* 30 *lrsign*) 0))
   (send *hrp2w* *lruse* :inverse-kinematics *dest* :debug-view t :link-list (send *hrp2w* :link-list (send *hrp2w* *lruse* :end-coords :parent)))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
