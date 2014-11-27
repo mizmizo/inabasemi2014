@@ -1,7 +1,8 @@
 #!/usr/bin/env roseus
 
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
-(hrp2w-init)
+;(hrp2w-init)
+(hrp2w-init :sim t)
 (objects *hrp2w*)
 
 (ros::roseus-add-msgs "jsk_pcl_ros")
@@ -18,15 +19,10 @@
 ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
-(defun pre_pose nil
-  (send *hrp2w* :angle-vector #f(0.0 15.0 0.0 40.0 -56.5395 -60.0223 49.4609 -112.253 -68.1949 -32.7942 69.9981 80.0 -45.0344 55.8813 -34.5312 -112.616 64.4653 34.6465 73.182 -80.0))
-;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-  )
-
 (defun recog_1marker nil
   (send *tfl* :wait-for-transform
 	"CHEST_LINK0" "/camera_remote/depth_registered/cluster_decomposeroutput00" (ros::time 0) 3)
-  (setq *target-1marker*
+  (setq *target-co*
 	(send *tfl* :lookup-transform
 	      "CHEST_LINK0" "/camera_remote/depth_registered/cluster_decomposeroutput00" (ros::time 0)))
   (setq *ik-target* (send *torso-co* :transform *target-co*))
@@ -42,6 +38,12 @@
   ;;""右手""の位置をコピー
   (send *ltray_pos* :translate (float-vector 0 500 0))
   ;;trayの幅から逆算して平行移動
+  )
+
+;;掴む前のポーズ.
+(defun pre_pose nil
+  (send *hrp2w* :angle-vector #f(0.0 15.0 0.0 40.0 -56.5395 -60.0223 49.4609 -112.253 -68.1949 -32.7942 69.9981 80.0 -45.0344 55.8813 -34.5312 -112.616 64.4653 34.6465 73.182 -80.0))
+  ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
 (defun via nil
@@ -71,6 +73,7 @@
   (hrp2w-start-grasp :larm)
   )
 
+;;掴んだ後トレイを持ち上げる.
 (defun up_tray nil
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
   (setq *larm-end* (send *hrp2w* :larm :end-coords :copy-worldcoords))
@@ -81,6 +84,8 @@
   (send *hrp2w* :larm :inverse-kinematics *larm-end* :rotation-axis t :torso t)
   ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
+
+;;持ち上げたトレイを下げる関数の実装が必要.
 
 (defun release nil
   (hrp2w-stop-grasp :rarm :angle -10)
