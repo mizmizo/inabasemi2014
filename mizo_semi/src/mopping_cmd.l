@@ -122,7 +122,7 @@
 )
 
 
-(defun return ()
+(defun return_mop ()
                                         ;ready                                                       
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 15))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 -15))
