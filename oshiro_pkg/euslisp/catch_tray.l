@@ -2,6 +2,7 @@
 
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
 ;;(hrp2w-init)
+;;vmaxも動かすか
 (hrp2w-init :sim t)
 (objects *hrp2w*)
 
