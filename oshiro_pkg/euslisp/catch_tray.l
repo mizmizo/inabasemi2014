@@ -68,13 +68,6 @@
   ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
-(defun go_tray_pos nil
-  (send *hrp2w* :rarm :inverse-kinematics *rtray_pos* :rotation-axis t :torso t)
-  (send *hrp2w* :larm :inverse-kinematics *ltray_pos* :rotation-axis t :torso t)
-  ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-  ;;トレイの持ち手との位置関係は要修正
-  )
-
 (defun catch nil
   (send *ri* :start-impedance :larm)
   (hrp2w-start-grasp :rarm)
