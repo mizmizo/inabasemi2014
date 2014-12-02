@@ -42,10 +42,19 @@
   
   (setq *ltray_pos* (send *hrp2w* :larm :end-coords :copy-worldcoords))
   ;;左手の先の角度を動かしたくないので，一度今の角度を保持するため座標ごとコピー
-  (send *ltray_pos* :locate (send *ik-target* :pos) :world)
+
+  (setq *ltray_pos2* (instance coordinates :init))
+  (send *ltray_pos2* :locate (send *rtray_pos* :pos) :world)
   ;;""右手""の位置をコピー
+<<<<<<< HEAD
   (send *ltray_pos* :locate (float-vector 0 500 0))
+=======
+  (send *ltray_pos2* :locate #f(0 420 0))
+>>>>>>> 47de6bb0e8395a8e53f58b65dec89a2bfefdefcb
   ;;trayの幅から逆算して平行移動
+  (send *ltray_pos* :locate (send *ltray_pos2* :pos) :world)
+
+  ;;(objects (list *hrp2w* *rtray_pos* *ltray_pos*))
   )
 
 ;;掴む前のポーズ.
@@ -54,6 +63,7 @@
   ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
+;;経由点のつもりで作ったらちょうどいい位置に移動したので移動させるときこちらを使う
 (defun via nil
   ;;右手の経由
   (setq *rvia* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
@@ -66,12 +76,22 @@
   (send *lvia* :translate (float-vector -50 0 0))
   (send *hrp2w* :larm :inverse-kinematics *lvia* :rotation-axis t :torso t)
   ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+<<<<<<< HEAD
+=======
+  )
+
+(defun go_tray_pos nil
+  (send *hrp2w* :rarm :inverse-kinematics *rtray_pos* :rotation-axis t :torso t)
+  (send *hrp2w* :larm :inverse-kinematics *ltray_pos* :rotation-axis t :torso t)
+  ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  ;;トレイの持ち手との位置関係は要修正
+>>>>>>> 47de6bb0e8395a8e53f58b65dec89a2bfefdefcb
   )
 
 (defun catch nil
   (send *ri* :start-impedance :larm)
-  (hrp2w-start-grasp :rarm)
-  (hrp2w-start-grasp :larm)
+  (hrp2w-start-grasp :rarm -8)
+  (hrp2w-start-grasp :larm 8)
   )
 
 ;;掴んだ後トレイを持ち上げる.
@@ -91,8 +111,8 @@
 ;;
 
 (defun release nil
-  (hrp2w-stop-grasp :rarm :angle -10)
-  (hrp2w-stop-grasp :larm :angle 10)
+  (hrp2w-stop-grasp :rarm :angle )
+  (hrp2w-stop-grasp :larm :angle )
   (send *ri* :stop-impedance :larm)
  )
 
