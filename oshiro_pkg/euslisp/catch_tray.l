@@ -84,10 +84,11 @@
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis t :torso t)
   (send *hrp2w* :larm :inverse-kinematics *larm-end* :rotation-axis t :torso t)
   ;;持ち上げた姿勢を決め打ちに変更したい
-  ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
+;;
 ;;持ち上げたトレイを下げる関数の実装が必要.
+;;
 
 (defun release nil
   (hrp2w-stop-grasp :rarm :angle -10)
