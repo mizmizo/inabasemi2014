@@ -45,12 +45,8 @@
 
   (setq *ltray_pos2* (instance coordinates :init))
   (send *ltray_pos2* :locate (send *rtray_pos* :pos) :world)
-  ;;""右手""の位置をコピー
-<<<<<<< HEAD
-  (send *ltray_pos* :locate (float-vector 0 500 0))
-=======
+  ;;""右手""の位置をコピ-
   (send *ltray_pos2* :locate #f(0 420 0))
->>>>>>> 47de6bb0e8395a8e53f58b65dec89a2bfefdefcb
   ;;trayの幅から逆算して平行移動
   (send *ltray_pos* :locate (send *ltray_pos2* :pos) :world)
 
@@ -76,17 +72,8 @@
   (send *lvia* :translate (float-vector -50 0 0))
   (send *hrp2w* :larm :inverse-kinematics *lvia* :rotation-axis t :torso t)
   ;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-<<<<<<< HEAD
-=======
   )
 
-(defun go_tray_pos nil
-  (send *hrp2w* :rarm :inverse-kinematics *rtray_pos* :rotation-axis t :torso t)
-  (send *hrp2w* :larm :inverse-kinematics *ltray_pos* :rotation-axis t :torso t)
-  ;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-  ;;トレイの持ち手との位置関係は要修正
->>>>>>> 47de6bb0e8395a8e53f58b65dec89a2bfefdefcb
-  )
 
 (defun catch nil
   (send *ri* :start-impedance :larm)
