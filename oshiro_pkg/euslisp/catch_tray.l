@@ -103,8 +103,6 @@
  )
 
 
-;;(send *rarm-end* :locate (send *rtarget* :pos) :world)
-;;(send *larm-end* :locate (send *ltarget* :pos) :world)
 
 ;;持つときのangle-vector
 ;;#f(0.0 30.0 0.0 40.0 -48.0279 -15.1736 18.9004 -66.7682 -22.5412 -0.027868 56.2728 60.0 -44.8755 12.1764 -11.4703 -73.9615 22.1978 2.31731 61.1763 -60.0)
