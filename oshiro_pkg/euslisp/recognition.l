@@ -30,5 +30,3 @@
       :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent)
 		       (car (send *hrp2w* :torso :links))))
 ;; 腰を使ったIKの使い方．回転角度は無視して位置だけ見る．計算途中の結果を画面に出力する．トルソを使う．IKに使わせるリンクをすべて渡す．
-
-;;(send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
