@@ -1,0 +1,106 @@
+<!-- -*- mode: xml -*- -->
+<launch>
+  <!--
+  $ roslaunch openni_launch openni.launch    ;; start kinect camera
+  $ rosrun rqt_reconfigure rqt_reconfigure   ;; parameter settings
+  $ roslaunch jsk_pcl_ros hsi_color_filter.launch DEFAULT_NAMESPACE:=/camera/depth_registered INPUT:=points
+  ;; subscribe camera/depth_registered/hsi_output
+  ;; subscribe tf and find /target
+  -->
+  <arg name="INPUT" default="hsi_input"/>
+  <arg name="OUTPUT1" default="hsi_output1"/>
+  <arg name="OUTPUT2" default="hsi_output2"/>
+  <arg name="CENTROID_FRAME" default="target"/>
+  <arg name="DEFAULT_NAMESPACE" default="HSI_color_filter"/>
+
+  <arg name="h_max_1" default="-1" />
+  <arg name="h_min_1" default="-30" />
+  <arg name="s_max_1" default="255" />
+  <arg name="s_min_1" default="125" />
+  <arg name="v_max_1" default="175" />
+  <arg name="v_min_1" default="48" />
+
+  <arg name="h_max_2" default="-105" />
+  <arg name="h_min_2" default="-114" />
+  <arg name="s_max_2" default="255" />
+  <arg name="s_min_2" default="125" />
+  <arg name="v_max_2" default="175" />
+  <arg name="v_min_2" default="48" />
+
+  <arg name="create_manager" default="false" />
+  <arg name="manager" default="hsi_filter_manager" />
+
+  <group ns="$(arg DEFAULT_NAMESPACE)">
+    <node if="$(arg create_manager)"
+          pkg="nodelet" type="nodelet" name="$(arg manager)"
+          args="manager" output="screen"/>
+
+    <node pkg="nodelet" type="nodelet" name="hsi_filter1"
+          args="load jsk_pcl/HSIColorFilter $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg INPUT)" />
+      <remap from="~output" to="$(arg OUTPUT1)" />
+      <rosparam>
+        use_indices: false
+      </rosparam>
+      <param name="h_limit_max" value="$(arg h_max_1)" />
+      <param name="h_limit_min" value="$(arg h_min_1)" />
+      <param name="s_limit_max" value="$(arg s_max_1)" />
+      <param name="s_limit_min" value="$(arg s_min_1)" />
+      <param name="v_limit_max" value="$(arg v_max_1)" />
+      <param name="v_limit_min" value="$(arg v_min_1)" />
+    </node>
+    <node pkg="nodelet" type="nodelet" name="euclidean_clustering1"
+          args="load jsk_pcl/EuclideanClustering $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg OUTPUT1)" />
+      <rosparam>
+        tolerance: 0.02
+        min_size: 100
+      </rosparam>
+    </node>
+
+    <node pkg="nodelet" type="nodelet"
+          name="cluster_decomposer1"
+          args="load jsk_pcl/ClusterPointIndicesDecomposerZAxis $(arg manager)"
+          output="screen" clear_params="true">
+      <remap from="~input" to="$(arg OUTPUT1)" />
+      <remap from="~target" to="euclidean_clustering1/output" />
+      <rosparam>
+      </rosparam>
+    </node>
+    
+    <node pkg="nodelet" type="nodelet" name="hsi_filter2"
+          args="load jsk_pcl/HSIColorFilter $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg INPUT)" />
+      <remap from="~output" to="$(arg OUTPUT2)" />
+      <rosparam>
+        use_indices: false
+      </rosparam>
+      <param name="h_limit_max" value="$(arg h_max_2)" />
+      <param name="h_limit_min" value="$(arg h_min_2)" />
+      <param name="s_limit_max" value="$(arg s_max_2)" />
+      <param name="s_limit_min" value="$(arg s_min_2)" />
+      <param name="v_limit_max" value="$(arg v_max_2)" />
+      <param name="v_limit_min" value="$(arg v_min_2)" />
+    </node>
+    <node pkg="nodelet" type="nodelet" name="euclidean_clustering2"
+          args="load jsk_pcl/EuclideanClustering $(arg manager)" output="screen">
+      <remap from="~input" to="$(arg OUTPUT2)" />
+      <rosparam>
+        tolerance: 0.02
+        min_size: 100
+      </rosparam>
+    </node>
+
+    <node pkg="nodelet" type="nodelet"
+          name="cluster_decomposer2"
+          args="load jsk_pcl/ClusterPointIndicesDecomposerZAxis $(arg manager)"
+          output="screen" clear_params="true">
+      <remap from="~input" to="$(arg OUTPUT2)" />
+      <remap from="~target" to="euclidean_clustering2/output" />
+      <rosparam>
+      </rosparam>
+    </node>
+
+  </group>
+
+</launch>
