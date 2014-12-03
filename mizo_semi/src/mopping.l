@@ -103,17 +103,13 @@
 
 
 (defun return_mop ()
-  ;;ready                                                       
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 15))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 -15))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   (hrp2w-stop-grasp :larm)
   (hrp2w-stop-grasp :rarm)
-  (send *ri* :stop-impedance :rarm)
-;;  (send *hrp2w* :reset-pose)
-;;  (send *hrp2w* :angle-vector (send *hrp2w* :angle-vector) 5000)
-;;  (send *ri* :wait-interpolation)
+  (send *ri* :stop-impedance :larm)
 )
 
 
