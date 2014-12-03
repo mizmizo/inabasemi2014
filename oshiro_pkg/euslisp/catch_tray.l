@@ -60,7 +60,7 @@
   )
 
 ;;経由点のつもりで作ったらちょうどいい位置に移動したので移動させるときこちらを使う
-(defun via nil
+(defun go-tray-pos nil
   ;;右手の経由
   (setq *rvia* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
   (send *rvia* :locate (send *rtray_pos* :pos) :world)
