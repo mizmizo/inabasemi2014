@@ -1,22 +1,25 @@
-#!usr/bin/env roseus
+#!/usr/bin/env roseus
 
-(ros::roseus "mopping")
+(ros::roseus "joy_mop")
+(ros::advertise "/cmd_vel" geometry_msgs::Twist 1)
+
+(setq *vel_msg* (instance geometry_msgs::Twist :init))
 
 (load "package://hrpsys_ros_bridge_tutorials/euslisp/hrp2w-interface.l")
 (hrp2w-init)
 (objects *hrp2w*)
-
 (setq *tfl* (instance ros::transform-listener :init))
 
-(defun init ()
+
+(defun ready_pose ()
   (send *hrp2w* :reset-pose)
   (send *hrp2w* :head :neck-p :joint-angle 30)
   (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
-)
+  )
 
 
-(defun catch ()
+(defun catch_mop ()
   ;;targetting                                               
   ;;rarm 
   (setq *torso-co* (send (car (send *hrp2w* :torso)) :copy-worldcoords))
@@ -73,7 +76,7 @@
   (send *ri* :wait-interpolation)
   (send *ri* :start-impedance :larm)
   (hrp2w-start-grasp :larm)
-)
+  )
 
 
 (defun sweep ()
@@ -99,7 +102,7 @@
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
-)
+  )
 
 
 (defun return_mop ()
@@ -110,6 +113,65 @@
   (hrp2w-stop-grasp :larm)
   (hrp2w-stop-grasp :rarm)
   (send *ri* :stop-impedance :larm)
-)
+  )
 
 
+(defun cmd_callback (msg)
+  (format t "axes: ~A~%" (send msg :axes))
+  (format t "buttons: ~A~%" (send msg :buttons))
+  (setq buttons (send msg :buttons))
+  (setq axes (send msg :axes))
+  (if (= (elt buttons 10) 1)
+      (progn
+	(setq x (* (elt axes 1) 0.1))
+	(setq y (* (elt axes 0) 0.1))
+	(setq z (* (elt axes 2) 0.1))
+	(cond
+	 ((= (elt buttons 3) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (ready_pose)
+	    ))
+	 ((= (elt buttons 13) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (catch_mop)
+	    ))
+	 ((= (elt buttons 12) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (sweep)
+	    ))
+	 ((= (elt buttons 14) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (return_mop)
+	    ))
+	 )
+	)
+    (progn
+      (setq x 0)
+      (setq y 0)
+      (setq z 0)
+      )
+    )
+  (send *vel_msg* :linear :x x)
+  (send *vel_msg* :linear :y y)
+  (send *vel_msg* :angular :z z)
+  (ros::publish "/cmd_vel" *vel_msg*)
+  )
+
+(ros::subscribe "/joy" sensor_msgs::Joy #'cmd_callback)
+
+(do-until-key
+ (ros::spin-once)
+ (ros::publish "/cmd_vel" *vel_msg*)
+ )

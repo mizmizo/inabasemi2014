@@ -87,7 +87,7 @@
 )
 
 
-(defun sweep1 ()
+(defun sweepready ()
                                         ;ready                                                       
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
@@ -95,7 +95,7 @@
 ;  (send *ri* :wait-interpolation)
 )
 
-(defun sweep2 ()
+(defun sweepleft ()
                                         ;left sweep                                                  
   (send *hrp2w* :larm :angle-vector #f(-55 35 -51 -92 80 -26 24 0))
   (send *hrp2w* :rarm :angle-vector #f(-45 5 72 -26 -25 35 -30 0))
@@ -104,16 +104,16 @@
 ;  (send *ri* :wait-interpolation)
 )
 
-(defun sweep3 ()
+(defun sweepright ()
                                         ;ready                                                       
-  (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
-  (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
-  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :rarm :angle-vector #f(-28 -31 51 -60 -25 28 -29 0))
+  (send *hrp2w* :larm :angle-vector #f(-75 -3 -70 -60 65 -24 13 0))
+  (send *hrp2w* :torso :angle-vector #f(-15 0))
 ;  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
 ;  (send *ri* :wait-interpolation)
 )
 
-(defun sweep4 ()
+(defun sweepup ()
                                         ;up                                                          
   (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
