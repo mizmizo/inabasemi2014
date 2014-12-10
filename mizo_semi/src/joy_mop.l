@@ -10,11 +10,13 @@
 (objects *hrp2w*)
 (setq *tfl* (instance ros::transform-listener :init))
 
+(setq def_x nil)
+(setq def_y nil)
+(setq def_z nil)
 
 (defun ready_pose ()
   (send *hrp2w* :reset-pose)
   (send *hrp2w* :head :neck-p :joint-angle 30)
-  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   )
 
@@ -50,9 +52,10 @@
    :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
    *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
   (send *hrp2w* :rarm :thumb-r :joint-angle 45)
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
-  (hrp2w-start-grasp :rarm)
+  (hrp2w-start-grasp :rarm :angle -10)
 
   ;;one hand                                                                                         
   (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
@@ -60,10 +63,13 @@
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
    :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
    *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
   ;;rarm up                                                    
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
   (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   ;;larm left sweep
@@ -74,7 +80,7 @@
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   (send *ri* :start-impedance :larm)
-  (hrp2w-start-grasp :larm)
+  (hrp2w-start-grasp :larm :angle 10)
   )
 
 
@@ -82,38 +88,64 @@
   ;;ready                                                       
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
+  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   ;;left sweep                                                  
   (send *hrp2w* :larm :angle-vector #f(-55 35 -51 -92 80 -26 24 0))
   (send *hrp2w* :rarm :angle-vector #f(-45 5 72 -26 -25 35 -30 0))
   (send *hrp2w* :torso :angle-vector #f(15 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   ;;ready                                                       
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
   (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   ;;right sweep
   (send *hrp2w* :rarm :angle-vector #f(-28 -31 51 -60 -25 28 -29 0))
   (send *hrp2w* :larm :angle-vector #f(-75 -3 -70 -60 65 -24 13 0))
   (send *hrp2w* :torso :angle-vector #f(-15 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)     
   ;;up                                                          
   (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
+  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   )
 
+(defun down  ()
+  (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
+  (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
+  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
+  )
+
+(defun up ()
+  (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
+  (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
+  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
+  )
 
 (defun return_mop ()
-  ;;ready
-  (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 15))
-  (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 -15))
+  ;;up
+  (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
+  (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
+  (send *hrp2w* :torso :angle-vector #f(0 0))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   (hrp2w-stop-grasp :larm)
@@ -129,12 +161,73 @@
   (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
    :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
    *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+  (send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   (hrp2w-stop-grasp :rarm)
 
   )
 
+(defun culc_pos (msg)
+  (if (= def_x nil)
+      (progn    (send def_x (send msg :pose :pose :position :x))
+		(send def_y (send msg :pose :pose :position :y))
+		(send def_z (send msg :pose :pose :orientation :z))
+		)
+    (progn    (setq odom_x (send msg :pose :pose :position :x))
+	      (setq odom_y (send msg :pose :pose :position :y))
+	      (setq odom_z (send msg :pose :pose :orientation :z))
+	      )
+    )
+  (setq trans_x (- odom_x def_x))
+  (setq trans_y (- odom_y def_y))
+  (setq trans_z (- odom_z def_z))
+  (format t "x:~A~%y:~A~%z:~A~%" trans_x trans_y trans_z)
+  )
+
+(defun return_pos ()
+  (setq x (* trans_x -0.1))
+  (while (> x 0.05)
+    (setq tmp (* x 0.5))
+    (setq x tmp)
+    ) 
+  (setq y (* trans_y -0.1))
+  (while (> y 0.05)
+    (setq tmp (* y 0.5))
+    (setq y tmp)
+    ) 
+  (setq z (* trans_z -0.1))
+  (while (> z 0.05)
+    (setq tmp (* z 0.5))
+    (setq z tmp)
+    )
+  (setq go 1)
+  (while (= go 1) 
+    (progn  
+      (if (< (* trans_x trans_x) 0.05)
+	  (setq x 0)
+	nil
+	)
+      (send *vel_msg* :linear :x x)
+      (if (< (* trans_y trans_y) 0.05)
+	  (setq y 0)
+	nil
+	)
+      (send *vel_msg* :linear :y y)
+      (if (< (* trans_z trans_z) 0.05)
+	  (setq z 0)
+	nil
+	)
+      (send *vel_msg* :angular :z z)
+      (ros::publish "/cmd_vel" *vel_msg*)
+      (if (= (*x y z) 0)
+	  (setq go 0)
+	)
+      )
+    nil
+    )
+  )
+    
 
 (defun cmd_callback (msg)
   (format t "axes: ~A~%" (send msg :axes))
@@ -175,6 +268,27 @@
 	    (setq z 0)
 	    (return_mop)
 	    ))
+	 ((= (elt buttons 4) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (up)
+	    ))
+	 ((= (elt buttons 6) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (down)
+	    ))
+	 ((= (elt buttons 0) 1)
+	  (progn
+	    (setq x 0)
+	    (setq y 0)
+	    (setq z 0)
+	    (return_pos)
+	    ))
 	 )
 	)
     (progn
@@ -190,6 +304,7 @@
   )
 
 (ros::subscribe "/joy" sensor_msgs::Joy #'cmd_callback)
+(ros::subscribe "/odom_vmax" nav_msgs::Odometry #'culc_pos)
 
 (do-until-key
  (ros::spin-once)
