@@ -96,6 +96,12 @@
   (send *hrp2w* :torso :angle-vector #f(0 0))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
+  ;;right sweep
+  (send *hrp2w* :rarm :angle-vector #f(-28 -31 51 -60 -25 28 -29 0))
+  (send *hrp2w* :larm :angle-vector #f(-75 -3 -70 -60 65 -24 13 0))
+  (send *hrp2w* :torso :angle-vector #f(-15 0))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)     
   ;;up                                                          
   (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
@@ -105,13 +111,28 @@
 
 
 (defun return_mop ()
+  ;;ready
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 15))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 -15))
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   (hrp2w-stop-grasp :larm)
-  (hrp2w-stop-grasp :rarm)
+  (send *hrp2w* :larm :thumb-r :joint-angle -45)
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
+  (send *ri* :wait-interpolation)
+  (send *hrp2w* :larm :angle-vector #f(-55 35 -51 -92 80 -26 24 -45))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 3000)
+  (send *ri* :wait-interpolation)
   (send *ri* :stop-impedance :larm)
+  (setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
+  (send *rarm-end* :locate (send *ik-rtarget-rtn* :pos) :world)
+  (send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
+   :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
+   *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+  (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
+  (send *ri* :wait-interpolation)
+  (hrp2w-stop-grasp :rarm)
+
   )
 
 
