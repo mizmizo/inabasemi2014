@@ -30,9 +30,8 @@
 
 
 (defun catch_mop ()
-  ;;targetting
-  ;;rarm
   (if (= catch_1 0)
+      ;;targetting
       (progn
 	(setq *torso-co* (send (car (send *hrp2w* :torso)) :copy-worldcoords))
 	(send *tfl* :wait-for-transform "CHEST_LINK0"
@@ -52,8 +51,7 @@
 	(setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
 	(send *rarm-end* :locate (send *ik-rtarget-pre* :pos) :world)
 	(send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
-	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
-									  *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
 	(send *hrp2w* :rarm :thumb-r :joint-angle 45)
 	(send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
 	(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
@@ -62,8 +60,7 @@
 	(setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
 	(send *rarm-end* :locate (send *ik-rtarget* :pos) :world)
 	(send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
-	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
-									  *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
 	(send *hrp2w* :rarm :thumb-r :joint-angle 45)
 	(send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
 	(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
@@ -74,8 +71,7 @@
 	(setq *rarm-end* (send *hrp2w* :rarm :end-coords :copy-worldcoords))
 	(send *rarm-end* :translate #f(-50 -50 200) :world)
 	(send *hrp2w* :rarm :inverse-kinematics *rarm-end* :rotation-axis nil
-	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send
-									  *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
+	      :debug-view t :torso t :link-list (send *hrp2w* :link-list (send *hrp2w* :rarm :end-coords :parent) (car (send *hrp2w* :torso :links))))
 	(send *hrp2w* :head :look-at (send *hrp2w* :rarm :end-coords :pos))
 	(send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
 	(send *ri* :wait-interpolation)
@@ -139,7 +135,9 @@
   (send *ri* :wait-interpolation)
   )
 
+
 (defun down  ()
+  ;;ready
   (send *hrp2w* :rarm :angle-vector #f(-40 -13 72 -46 -30 35 -29 0))
   (send *hrp2w* :larm :angle-vector #f(-60 26 -60 -90 65 -24 13 0))
   (send *hrp2w* :torso :angle-vector #f(0 0))
@@ -148,7 +146,9 @@
   (send *ri* :wait-interpolation)
   )
 
+
 (defun up ()
+  ;;up
   (send *hrp2w* :larm :angle-vector #f(-72 24 -60 -87 80 -24 13 0))
   (send *hrp2w* :rarm :angle-vector #f(-40 -18 60 -64 -35 40 -14 0))
   (send *hrp2w* :torso :angle-vector #f(0 0))
@@ -156,6 +156,7 @@
   (send *ri* :angle-vector (send *hrp2w* :angle-vector) 5000)
   (send *ri* :wait-interpolation)
   )
+
 
 (defun return_mop ()
   ;;up
@@ -199,8 +200,8 @@
   (setq trans_x (- odom_x def_x))
   (setq trans_y (- odom_y def_y))
   (setq trans_z (- odom_z def_z))
-;;  (format t "x:~A~%y:~A~%z:~A~%" trans_x trans_y trans_z)
   )
+
 
 (defun return_pos ()
   (if (= go_x 0)
@@ -225,6 +226,7 @@
     )
   )
 
+
 (defun return_pos_reset ()
   (setq go_x 0)
   (setq go_y 0)
@@ -233,8 +235,6 @@
 
 
 (defun cmd_callback (msg)
-;;  (format t "axes: ~A~%" (send msg :axes))
-;;  (format t "buttons: ~A~%" (send msg :buttons))
   (setq buttons (send msg :buttons))
   (setq axes (send msg :axes))
   (if (= (elt buttons 10) 1)
